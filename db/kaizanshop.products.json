@@ -1,0 +1,87 @@
+[{
+  "_id": {
+    "$oid": "68e53294c9af41fcce0d3d03"
+  },
+  "name": "Starter HTML/CSS Notes",
+  "description": "Ghi chú nhanh cho người mới: cấu trúc HTML5, Box Model, Flex/Grid, responsive tips.",
+  "price": 49000,
+  "category": [
+    "notes",
+    "frontend"
+  ],
+  "author": [
+    "Kaizan"
+  ],
+  "images": [
+    "/images/htmlcss-notes.png"
+  ],
+  "attributes": {
+    "pages": 24,
+    "format": "PDF"
+  },
+  "created_at": {
+    "$date": "2025-10-07T10:00:00.000Z"
+  },
+  "updated_at": {
+    "$date": "2025-10-07T10:00:00.000Z"
+  },
+  "current_page": 1
+},
+{
+  "_id": {
+    "$oid": "68e53294c9af41fcce0d3d04"
+  },
+  "name": "JS Basics Cheat-Sheets",
+  "description": "Cú pháp, array methods, DOM quick refs + ví dụ ngắn. Phù hợp ôn nhanh trước khi code.",
+  "price": 59000,
+  "category": [
+    "cheatsheet",
+    "javascript"
+  ],
+  "author": [
+    "Kaizan"
+  ],
+  "images": [
+    "/images/js-cheats.png"
+  ],
+  "attributes": {
+    "pages": 18,
+    "format": "PDF"
+  },
+  "created_at": {
+    "$date": "2025-10-07T10:02:00.000Z"
+  },
+  "updated_at": {
+    "$date": "2025-10-07T10:02:00.000Z"
+  },
+  "current_page": 1
+},
+{
+  "_id": {
+    "$oid": "68e53294c9af41fcce0d3d05"
+  },
+  "name": "Python Mini Toolkit",
+  "description": "Snippet xử lý file/JSON, requests, CLI template; giúp bắt đầu nhanh các script nhỏ.",
+  "price": 69000,
+  "category": [
+    "python",
+    "tool"
+  ],
+  "author": [
+    "Kaizan"
+  ],
+  "images": [
+    "/images/py-toolkit.png"
+  ],
+  "attributes": {
+    "files": 12,
+    "license": "personal"
+  },
+  "created_at": {
+    "$date": "2025-10-07T10:03:00.000Z"
+  },
+  "updated_at": {
+    "$date": "2025-10-07T10:03:00.000Z"
+  },
+  "current_page": 1
+}]
