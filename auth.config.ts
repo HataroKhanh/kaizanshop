@@ -40,8 +40,8 @@ export const authOptions: NextAuthOptions = {
       },
     }),
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: process.env.GOOGLE_CLIENT!,
+      clientSecret: process.env.GOOGLE_SECRET!,
     }),
     GitHubProvider({
       clientId: process.env.AUTH_GITHUB_ID!,
@@ -62,4 +62,5 @@ export const authOptions: NextAuthOptions = {
     // (tùy chọn) signIn: bắt case email trùng/khác provider và return URL tùy biến
   },
   debug: process.env.NODE_ENV === "development",
+  
 };

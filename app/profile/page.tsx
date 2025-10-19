@@ -2,6 +2,7 @@
 import { useSession } from "next-auth/react";
 import Header from "../components/Header";
 import Image from "next/image";
+import { google } from "googleapis";
 
 export interface DefaultSession {
   user?: { id?: string | "" };
@@ -9,6 +10,11 @@ export interface DefaultSession {
 
 export default function ProfilePage() {
   const session = useSession();
+
+  
+  
+
+
   return (
     <>
       <Header />

@@ -24,8 +24,8 @@ function GallaryProduct({ srcs }: { srcs: string[] }) {
   }
 
   return (
-    
-  );
+   <p>123</p> 
+  )
 }
 
 export default memo(GallaryProduct);

@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     );
   }
 
-  if (!shopId) {
+  if (!selfId) {
     return NextResponse.json({ error: "shopId is required" }, { status: 400 });
   }
 
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
   const products = db.collection("products_shop");
 
   const res = await products
-    .find({ shopId: shopId }, { projection: { _id: 0 } })
+    .find({ shopId: selfId }, { projection: { _id: 0 } })
     .sort({ createdAt: filter === "up" ? -1 : 1 })
     .skip((page - 1) * limit)
     .toArray();
