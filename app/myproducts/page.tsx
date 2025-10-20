@@ -2,66 +2,16 @@
 import { useSession } from "next-auth/react";
 import Header from "../components/Header";
 import useSWR from "swr";
-import Loading from "../components/utils/Loading";
 import { CiSquarePlus } from "react-icons/ci";
-import Image from "next/image";
 import Link from "next/link";
 import { formatPrice } from "@/utils/formatPrice";
-
-const exData = [
-  {
-    id: "1",
-    nameProduct: "Sản phẩm 1",
-    price: 100000,
-    description: "Mô tả sản phẩm 1",
-    image: ["https://via.placeholder.com/150"],
-    shopId: "shop1",
-
-    countSold: 1,
-  },
-  {
-    id: "2",
-    nameProduct: "Sản phẩm 2",
-    price: 200000,
-    description: "Mô tả sản phẩm 2",
-    image: ["https://via.placeholder.com/150"],
-    shopId: "shop1",
-    countSold: 2,
-  },
-  {
-    id: "3",
-    nameProduct: "Sản phẩm 3",
-    price: 300000,
-    description: "Mô tả sản phẩm 3",
-    image: ["https://via.placeholder.com/150"],
-    shopId: "shop1",
-    countSold: 100,
-  },
-  {
-    id: "4",
-    nameProduct: "Sản phẩm 4",
-    price: 400000,
-    description: "Mô tả sản phẩm 4",
-    image: ["https://via.placeholder.com/150"],
-    shopId: "shop1",
-    countSold: 2,
-  },
-  {
-    id: "5",
-    nameProduct: "Sản phẩm 5",
-    price: 500000,
-    description: "Mô tả sản phẩm 5",
-    image: ["https://via.placeholder.com/150"],
-    shopId: "shop1",
-    countSold: 5,
-  },
-];
+import Image from "next/image";
 
 export default function MyProductsPage() {
   const { data: session } = useSession();
-  const swr = useSWR("", (url) =>
+  const swr = useSWR("/api/products/show_shop_self", (url) =>
     fetch(url, {
-      method: "POST",
+      method: "GET",
       headers: { "Content-Type": "application/json" },
     }).then((res) => res.json())
   );
@@ -69,53 +19,67 @@ export default function MyProductsPage() {
   return (
     <>
       <Header />
-      <section className='flex flex-col mx-auto mt-10 p-20 pt-0'>
-        <div className=' py-10  flex flex-row justify-between'>
-          <h1 className='text-2xl p-5 pl-0'>
-            Sản phẩm của tôi
-          </h1>
-          <div className='flex flex-row gap-1 items-center px-5 pr-0'>
-            <div className='flex flex-row gap-1 items-center bg-blue-900 p-2 rounded-xl '>
-              <CiSquarePlus className=''></CiSquarePlus>
-              <Link
-                className='cursor-pointer'
-                href='/myproducts/newproduct'>
+      <section className="flex flex-col mx-auto mt-10 p-20 pt-0 max-w-7xl">
+        <div className=" py-10  flex flex-row justify-between ">
+          <h1 className="text-2xl p-5 pl-0">Sản phẩm của tôi</h1>
+          <div className="flex flex-row gap-1 items-center px-5 pr-0">
+            <div className="flex flex-row gap-1 items-center bg-blue-900 p-2 rounded-xl ">
+              <CiSquarePlus className=""></CiSquarePlus>
+              <Link className="cursor-pointer" href="/myproducts/newproduct">
                 {" "}
                 Tạo sản phẩm mới
               </Link>
             </div>
           </div>
         </div>
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4'>
-          {exData.map((product) => (
-            <div key={product.id}>
-              <div className='animate-pulse p-10 border-1 border-amber-100 h-70 flex flex-row bg-cover gap-5'>
-                <div className='flex flex-col gap-1'>
-                  <Image
-                    src='/example-product.png'
-                    className='object-cover w-50 h-50'
-                    alt='image'
-                    width={200}
-                    height={200}></Image>
-                  <div className='mt-5  font-semibold'>
-                    Giá: {formatPrice(product.price)}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
+          {swr.isLoading
+            ? null
+            : swr.data.map((item: any) => {
+                return (
+                  <div className="flex flex-col p-5" key={item.idProduct}>
+                    <div className="flex flex-col gap-5">
+                      {" "}
+                      <div className="flex gap-5">
+                        <div className="flex-shrink-0">
+                          <Image
+                            src="/fallback.png"
+                            width={200}
+                            height={200}
+                            className="bg-white "
+                            alt={item.nameProduct}
+                          ></Image>
+                        </div>
+                        <div className="flex flex-col gap-2 min-w-0">
+                          <h2 className="text-2xl truncate">
+                            {item.nameProduct}
+                          </h2>
+                          <p className="truncate">{item.description}</p>
+                          {/* Thêm "truncate" vào đây để số dài không bị vỡ */}
+                          <h3 className="truncate">{item.price || 0}</h3>
+                        </div>
+                      </div>
+                      <div className="flex flex-row justify-between align-middle ">
+                        <div>
+                          <p>
+                            Lượt mua: <span>{item.count || 0}</span>
+                          </p>
+                          <p>
+                            Đánh giá: <span>{item.rate || 0}</span>
+                          </p>
+                        </div>
+                        <div className="flex items-center">
+                          <Link href={`/products/${item.idProduct}`}>
+                            <button className="cursor-pointer border px-5 py-2 rounded-2xl hover:animate-pulse">
+                              Xem thêm
+                            </button>
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-
-                  <div>
-                    Số lần đã bán: {product.countSold}
-                  </div>
-                </div>
-                <Link
-                  className='gap-5 flex flex-col'
-                  href={product.id}>
-                  <h2 className='text-3xl'>
-                    {product.nameProduct}
-                  </h2>
-                  <div>{product.description}</div>
-                </Link>
-              </div>
-            </div>
-          ))}
+                );
+              })}
         </div>
       </section>
     </>

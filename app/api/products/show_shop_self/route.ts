@@ -2,7 +2,8 @@ import clientPromise from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth.config";
-export async function POST(req: Request) {
+
+export async function GET(req: Request) {
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -12,30 +13,20 @@ export async function POST(req: Request) {
     );
   }
 
-  const data = await req.json();
-  const filter = data.filter || "";
-  const page = data.page || 1;
-  const limit = data.limit || 10;
-  const selfId = data.shopId || "";
+  const { searchParams } = new URL(req.url);
+  const limit = Math.min(Number(searchParams.get("limit")) || 10, 25); 
+  const filter = searchParams.get("filter") as "up" | "down" | null;
 
-  if (page < 1 || limit < 1 || limit > 25) {
-    return NextResponse.json(
-      { error: "Invalid page or limit" },
-      { status: 400 }
-    );
-  }
+  const client = await clientPromise;
+  const db = client.db("kaizanshop");
+  const products = db.collection("products");
 
-  if (!selfId) {
-    return NextResponse.json({ error: "shopId is required" }, { status: 400 });
-  }
-
-  const db = (await clientPromise).db("products");
-  const products = db.collection("products_shop");
+  const sortOrder = filter === "up" ? -1 : 1; 
 
   const res = await products
-    .find({ shopId: selfId }, { projection: { _id: 0 } })
-    .sort({ createdAt: filter === "up" ? -1 : 1 })
-    .skip((page - 1) * limit)
+    .find({ "owner.id": session.user.id }, { projection: { _id: 0 } })
+    .sort({ createdAt: sortOrder })
+    .limit(limit)
     .toArray();
 
   return NextResponse.json(res);

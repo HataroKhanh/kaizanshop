@@ -50,16 +50,23 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   pages: { signIn: "/auth/signin", error: "/auth/signin" },
-  callbacks: {
+ callbacks: {
     async jwt({ token, user }) {
-      if (user?.id) token.uid = user.id;
+      // Khi đăng nhập, đối tượng 'user' sẽ có sẵn
+      // 'user.id' đã được MongoAdapter tự động map từ '_id'
+      if (user) {
+        token.id = user.id;
+      }
       return token;
     },
     async session({ session, token }) {
-      if (session.user && token?.uid) (session.user as any).id = token.uid;
+      // Gán 'id' từ token vào 'session.user.id'
+      // Đảm bảo rằng session.user là một đối tượng
+      if (session.user) {
+        session.user.id = token.id as string; // 'token.id' là cái chúng ta đã gán ở callback 'jwt'
+      }
       return session;
     },
-    // (tùy chọn) signIn: bắt case email trùng/khác provider và return URL tùy biến
   },
   debug: process.env.NODE_ENV === "development",
   
