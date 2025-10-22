@@ -14,9 +14,9 @@ export default function NewProductPage() {
   const [nameProduct, setNameProduct] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState<number>(0);
-  const [mainImage, setMainImage] = useState<string>();
-  const [listImage, setListImage] = useState<string[]>([]);
-  const [imageFiles, setImageFiles] = useState<FileList | null>(null);
+  const [mainImage, setMainImage] = useState<string>("");
+  const [listImage, setListImage] = useState<File[]>([]);
+
   const [productFile, setProductFile] = useState<File | null>(null);
   const [percentProcess, setPercentProcess] = useState<number>(0);
   const [infoProcess, setInfoProcess] = useState<{
@@ -37,45 +37,27 @@ export default function NewProductPage() {
   const MAX_IMAGES = 3;
 
   function onchangeImg(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = e.currentTarget.files;
-    if (!files?.length) return;
-    setImageFiles(files);
+    const files = e.currentTarget.files as FileList;
 
     const picked = Array.from(files);
+    console.log(picked);
+
     setListImage((prev) => {
       const remaining = MAX_IMAGES - prev.length;
       if (remaining <= 0) return prev;
 
-      const selected = picked
-        .slice(0, remaining)
-        .filter((f) => f.type.startsWith("image/"));
+      const newMainImage = picked[0];
+      const newListImage = [...prev, ...picked];
 
-      const newUrls = selected.map((f) => URL.createObjectURL(f));
-      const newListImage = [...prev, ...newUrls];
-      setMainImage(newListImage[0] || "/fallback.png");
+      setMainImage(URL.createObjectURL(newMainImage))
+
       return newListImage;
     });
+    e.currentTarget.value = "";
   }
 
-  function handleRemoveImage(url: string) {
-    setListImage((prev) => {
-      const next = prev.filter((item) => item !== url);
-
-      setMainImage((cur) => {
-        if (cur === url) {
-          return next.length ? next[next.length - 1] : "/fallback.png";
-        }
-
-        return next.includes(cur ?? "")
-          ? cur
-          : next.length
-          ? next[next.length - 1]
-          : "/fallback.png";
-      });
-
-      return next;
-    });
-
+  function handleRemoveImage({ url, name }: { url: string; name: string }) {
+    setListImage((prev) => prev.filter((item) => name !== item.name));
     URL.revokeObjectURL(url);
   }
 
@@ -124,11 +106,12 @@ export default function NewProductPage() {
     formData.append("description-product", description);
     formData.append("price", price.toString());
     if (productFile) formData.append("file-product", productFile);
-    if (imageFiles) {
-      Array.from(imageFiles).map((item) => {
-        formData.append("file-image", item);
+    if (listImage) {
+      listImage.forEach(async (item) => {
+        formData.append("file-image",item);
       });
     }
+
     xhr.send(formData);
   }
 
@@ -169,30 +152,37 @@ export default function NewProductPage() {
                       />
                     </div>
                   ) : (
-                    listImage.map((item, i) => (
+                    listImage.map((item, i) => {
+                      const url = URL.createObjectURL(item)
+                      const name = item.name
+
+                      return (
                       <div
                         key={i}
                         className={`relative w-20 aspect-square overflow-hidden rounded border cursor-pointer ${
-                          item === mainImage
+                          url === mainImage
                             ? "ring-2 ring-blue-500"
                             : "border-gray-400"
                         }`}
-                        onClick={() => setMainImage(item)}
+                        onClick={() => {
+                          setMainImage(url)
+                        }}
                       >
                         <Image
-                          src={item}
+                          src={url}
                           alt={`thumb-${i}`}
                           fill
                           className="object-cover"
                         />
                         <button
-                          onClick={() => handleRemoveImage(item)}
+                          onClick={() => handleRemoveImage({url,name})}
                           className="absolute z-10 top-1 right-1 bg-black/50 p-1 rounded-full text-white"
                         >
                           <FaTrashAlt size={12} />
                         </button>
                       </div>
-                    ))
+                    )
+                    })
                   )}
                 </div>
               </div>

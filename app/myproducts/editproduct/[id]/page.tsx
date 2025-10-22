@@ -1,14 +1,14 @@
 "use client";
 import Header from "@/app/components/Header";
-import Image from "next/image";
-import {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useState,
-  ChangeEvent,
-} from "react";
+import { useEffect, useState, ChangeEvent } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
 
+import { Pagination, Navigation, Scrollbar, A11y } from "swiper/modules";
+import { FaTrash } from "react-icons/fa";
 type EditableFieldProps = {
   label: string;
   value: string;
@@ -61,7 +61,6 @@ function EditableField({
     );
   }
 
-  // TRẠNG THÁI "XEM" (ĐÃ CÓ p-4 SẴN)
   return (
     <div
       onClick={() => setIsEditing(true)}
@@ -76,7 +75,6 @@ function EditableField({
       </strong>
       <span
         style={{ whiteSpace: "pre-wrap" }}
-        // Font này đã là text-base (khớp với input đã sửa)
         className="mt-1 block text-base text-gray-900 dark:text-white break-words"
       >
         {value || <span className="text-gray-400">(Trống)</span>}
@@ -85,10 +83,59 @@ function EditableField({
   );
 }
 
+function RemoveProduct({ idProduct }: { idProduct: string }) {
+  const [checkRemoveProduct, setChangeRemoveProduct] = useState(false);
+  const router = useRouter();
+
+  const handleRemoveProduct = () => {
+    if (idProduct !== "") {
+      const res = fetch("/api/products/remove_product", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: idProduct,
+        }),
+      })
+        .then((data) => data.json())
+        .then((data) => {
+          if (data?.success) {
+            router.push("/myproducts");
+          }
+        });
+    }
+  };
+  return checkRemoveProduct ? (
+    <div className="flex flex-row gap-8 justify-end">
+      <button
+        className="w-22 py-2 border rounded-[5px] hover:bg-red-500 cursor-pointer"
+        onClick={() => setChangeRemoveProduct(false)}
+      >
+        Huỷ
+      </button>
+      <button
+        className="w-22 py-2 border rounded-[5px] hover:bg-green-500 cursor-pointer"
+        onClick={() => handleRemoveProduct()}
+      >
+        Tiếp tục
+      </button>
+    </div>
+  ) : (
+    <button
+      onClick={() => setChangeRemoveProduct(true)}
+      className="border px-3 py-2 rounded-[5px] cursor-pointer hover:bg-red-500 duration-200"
+    >
+      Xoá sản phẩm
+    </button>
+  );
+}
+
 export default function EditProductPage() {
-  const id = "68f6482331a9921d88b1a84f";
+  const { id } = useParams();
 
   const [dataProduct, setDataProduct] = useState<any>(null);
+  const [listId, setListId] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -97,6 +144,13 @@ export default function EditProductPage() {
       .then((data) => {
         if (data && !data.error) {
           setDataProduct(data);
+
+          setListId([
+            data.file.fileId,
+            ...Array.from(data.images)
+              .map((item: any) => item.id)
+              .filter((item) => item),
+          ]);
         }
       })
       .catch((err) => {
@@ -112,6 +166,7 @@ export default function EditProductPage() {
   const [descriptionFull, setDescriptionFull] = useState<string>("");
   const [fileProduct, setFileProduct] = useState<File | null>(null);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
+
   const handleAddImage = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
@@ -121,12 +176,63 @@ export default function EditProductPage() {
   };
 
   useEffect(() => {
-    if (dataProduct) {
-      setNameProduct(dataProduct.nameProduct || "");
-      setDescription(dataProduct.description || "");
-      setDescriptionFull(dataProduct.descriptionFull || "");
-    }
+    const loadProductData = async () => {
+      if (dataProduct) {
+        setNameProduct(dataProduct.nameProduct || "");
+        setDescription(dataProduct.description || "");
+        setDescriptionFull(dataProduct.descriptionFull || "");
+
+        const Images = Array.from(dataProduct.images);
+
+        if (Images && Images.length !== 0) {
+          const dataImagesPromise = Images.map(async (item: any) => {
+            try {
+              const res = await fetch(`/api/image/get_image?id=${item.id}`);
+              if (!res.ok) {
+                console.error(`Failed to fetch image ${item.id}`);
+                return null;
+              }
+
+              const blob = await res.blob();
+              let filename = "image.jpg"; // Tên file mặc định
+
+              const disposition = res.headers.get("Content-Disposition");
+              if (disposition) {
+                const filenameMatch = /filename="([^"]+)"/.exec(disposition);
+                if (filenameMatch && filenameMatch[1]) {
+                  filename = filenameMatch[1];
+                }
+              }
+
+              const file = new File([blob], filename, {
+                type: blob.type,
+                lastModified: Date.now(),
+              });
+
+              return file;
+            } catch (error) {
+              console.error(`Lỗi khi tải ảnh ${item.id}:`, error);
+              return null;
+            }
+          });
+
+          const loadedImageFiles = await Promise.all(dataImagesPromise);
+          setImageFiles(
+            loadedImageFiles.filter((file): file is File => file !== null)
+          );
+        } else {
+          setImageFiles([]);
+        }
+      }
+    };
+
+    loadProductData();
   }, [dataProduct]);
+
+  const handleRemoveImage = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] as File;
+    setImageFiles(imageFiles.filter((item) => item.name !== file.name));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -168,6 +274,10 @@ export default function EditProductPage() {
           Chỉnh sửa sản phẩm
         </h1>
 
+        <div className="text-end p-5">
+          <RemoveProduct idProduct={id?.toString() || ""} />
+        </div>
+
         <form
           onSubmit={handleSubmit}
           className="flex flex-col gap-4 rounded-lg border border-gray-200 bg-white p-6 shadow-lg dark:border-gray-700 dark:bg-gray-800"
@@ -198,22 +308,62 @@ export default function EditProductPage() {
 
           <hr className="dark:border-gray-700" />
 
-          <div className="rounded-lg border border-dashed border-gray-300 p-6 dark:border-gray-600">
-            <label
-              htmlFor="file-image"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              Thêm ảnh mới
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              name="file-image"
-              id="file-image"
-              multiple
-              onChange={handleAddImage}
-              className="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:rounded-full file:border-0 file:bg-indigo-50 file:py-2 file:px-4 file:text-sm file:font-semibold file:text-indigo-700 hover:file:bg-indigo-100 dark:text-gray-400 dark:file:bg-indigo-900 dark:file:text-indigo-300 dark:hover:file:bg-indigo-800"
-            />
+          <div className="rounded-lg border border-dashed border-gray-300 dark:border-gray-600 p-6 flex flex-col md:flex-row gap-6">
+            {/* Cột bên trái */}
+            <div className="flex-1">
+              <label
+                htmlFor="file-image"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Thêm ảnh mới
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                name="file-image"
+                id="file-image"
+                multiple
+                onChange={handleAddImage}
+                className="mt-2 block w-full text-sm text-gray-500
+          file:mr-4 file:rounded-full file:border-0 file:bg-indigo-50
+          file:py-2 file:px-4 file:text-sm file:font-semibold file:text-indigo-700
+          hover:file:bg-indigo-100 dark:text-gray-400 dark:file:bg-indigo-900
+          dark:file:text-indigo-300 dark:hover:file:bg-indigo-800"
+              />
+            </div>
+
+            {/* Cột bên phải - Swiper */}
+            <div className="flex-1 min-w-[250px]">
+              <div className="w-full max-w-md mx-auto">
+                <Swiper
+                  modules={[Navigation, Pagination, Scrollbar, A11y]}
+                  spaceBetween={20}
+                  slidesPerView={1}
+                  navigation
+                  pagination={{ clickable: true }}
+                  scrollbar={{ draggable: true }}
+                  className="rounded-lg overflow-hidden"
+                >
+                  {imageFiles.map((item) => {
+                    return (
+                      <SwiperSlide className="relative z-20">
+                        <img
+                          src={URL.createObjectURL(item)}
+                          alt="Slide 1"
+                          className="w-full h-64 object-cover z-0"
+                        />
+                        <button
+                          onClick={() => console.log()}
+                          className="absolute top-2 right-2 z-50"
+                        >
+                          <FaTrash className="text-[#4f39f6] text-2xl" />
+                        </button>
+                      </SwiperSlide>
+                    );
+                  })}
+                </Swiper>
+              </div>
+            </div>
           </div>
           <div className="rounded-lg border border-dashed border-gray-300 p-6 dark:border-gray-600">
             <label
@@ -235,7 +385,7 @@ export default function EditProductPage() {
           <div className="flex justify-end pt-4">
             <button
               type="submit"
-              className="rounded-md bg-indigo-600 py-2 px-4 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="rounded-md bg-indigo-600 py-2 px-4 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Lưu thay đổi
             </button>

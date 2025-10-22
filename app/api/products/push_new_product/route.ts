@@ -46,7 +46,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Login bro???" }, { status: 405 });
 
     const data = await request.formData();
-    const ownner = "khanh";
+    const owner = "khanh";
 
     const file: File | null = data.get("file-product") as unknown as File;
 
@@ -97,10 +97,11 @@ export async function POST(request: Request) {
       (item) => item !== null
     );
 
-    const checInsert = await products.insertOne({
+    const checkInsert = await products.insertOne({
       nameProduct: nameProduct,
       description: descriptionProduct,
       owner: session?.user,
+      price : Number(price),
       images: resultsImage,
       file: {
         fileName: fileRes.name,
@@ -111,7 +112,7 @@ export async function POST(request: Request) {
       count : 0,
       rate : null,
     });
-    if (!checInsert) return NextResponse.json({ error: "False to insert" });
+    if (!checkInsert) return NextResponse.json({ error: "False to insert" });
 
     return NextResponse.json("ok");
 

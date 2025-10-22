@@ -1,5 +1,7 @@
 // /app/page.tsx (hoặc file client component của bạn)
 'use client';
+import Swiper from 'swiper';
+import 'swiper/css';
 
 import { useState, FormEvent } from 'react';
 
@@ -8,7 +10,6 @@ export default function Uploader() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
   
-  // State mới để theo dõi % upload
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
