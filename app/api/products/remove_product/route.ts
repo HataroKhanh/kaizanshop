@@ -40,7 +40,6 @@ export async function POST(req: Request) {
       const res = await drive.files.delete({
         fileId: item,
       });
-      console.log(res.data);
     });
 
     Promise.all(removeFileImages);

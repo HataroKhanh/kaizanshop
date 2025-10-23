@@ -46,11 +46,10 @@ export const authOptions: NextAuthOptions = {
     GitHubProvider({
       clientId: process.env.AUTH_GITHUB_ID!,
       clientSecret: process.env.AUTH_GITHUB_SECRET!,
-      authorization: { params: { scope: "read:user user:email" } },
     }),
   ],
   pages: { signIn: "/auth/signin", error: "/auth/signin" },
- callbacks: {
+  callbacks: {
     async jwt({ token, user }) {
       // Khi đăng nhập, đối tượng 'user' sẽ có sẵn
       // 'user.id' đã được MongoAdapter tự động map từ '_id'
@@ -69,5 +68,4 @@ export const authOptions: NextAuthOptions = {
     },
   },
   debug: process.env.NODE_ENV === "development",
-  
 };

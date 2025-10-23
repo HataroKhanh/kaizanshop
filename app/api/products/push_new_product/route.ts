@@ -101,7 +101,7 @@ export async function POST(request: Request) {
       nameProduct: nameProduct,
       description: descriptionProduct,
       owner: session?.user,
-      price : Number(price),
+      price: Number(price),
       images: resultsImage,
       file: {
         fileName: fileRes.name,
@@ -109,8 +109,9 @@ export async function POST(request: Request) {
         hashSha256: sha256,
       },
       idProduct: new ObjectId().toString(),
-      count : 0,
-      rate : null,
+      sold: 0,
+      rate: 0,
+      tags: [],
     });
     if (!checkInsert) return NextResponse.json({ error: "False to insert" });
 

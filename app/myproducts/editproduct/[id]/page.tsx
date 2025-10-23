@@ -9,6 +9,7 @@ import "swiper/css/navigation";
 
 import { Pagination, Navigation, Scrollbar, A11y } from "swiper/modules";
 import { FaTrash } from "react-icons/fa";
+
 type EditableFieldProps = {
   label: string;
   value: string;
@@ -26,7 +27,8 @@ function EditableField({
 
   if (isEditing) {
     return (
-      // 1. THÊM p-4 VÀO ĐÂY ĐỂ KHỚP VỚI TRẠNG THÁI "XEM"
+  
+
       <div className="relative p-4">
         <label
           htmlFor={label}
@@ -42,7 +44,7 @@ function EditableField({
             onBlur={() => setIsEditing(false)}
             autoFocus
             rows={5}
-            // 2. ĐỔI FONT THÀNH text-base
+          
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-base"
           />
         ) : (
@@ -52,8 +54,7 @@ function EditableField({
             value={value}
             onChange={(e) => onChange(e.target.value)}
             onBlur={() => setIsEditing(false)}
-            autoFocus
-            // 2. ĐỔI FONT THÀNH text-base
+            autoFocus  
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-base"
           />
         )}
@@ -137,6 +138,9 @@ export default function EditProductPage() {
   const [dataProduct, setDataProduct] = useState<any>(null);
   const [listId, setListId] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [price, setPrice] = useState<string>(
+    dataProduct?.price?.toString() || ""
+  );
 
   useEffect(() => {
     fetch(`/api/products/get_self_product/?id=${id}`)
@@ -144,6 +148,7 @@ export default function EditProductPage() {
       .then((data) => {
         if (data && !data.error) {
           setDataProduct(data);
+          setPrice(dataProduct?.price?.toString())
 
           setListId([
             data.file.fileId,
@@ -173,6 +178,7 @@ export default function EditProductPage() {
       const newFiles = Array.from(files);
       setImageFiles((prev) => [...prev, ...newFiles]);
     }
+    e.target.value = "";
   };
 
   useEffect(() => {
@@ -181,6 +187,7 @@ export default function EditProductPage() {
         setNameProduct(dataProduct.nameProduct || "");
         setDescription(dataProduct.description || "");
         setDescriptionFull(dataProduct.descriptionFull || "");
+        setPrice(dataProduct.price || "")
 
         const Images = Array.from(dataProduct.images);
 
@@ -194,7 +201,7 @@ export default function EditProductPage() {
               }
 
               const blob = await res.blob();
-              let filename = "image.jpg"; // Tên file mặc định
+              let filename = "image.jpg"; 
 
               const disposition = res.headers.get("Content-Disposition");
               if (disposition) {
@@ -229,19 +236,52 @@ export default function EditProductPage() {
     loadProductData();
   }, [dataProduct]);
 
-  const handleRemoveImage = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] as File;
-    setImageFiles(imageFiles.filter((item) => item.name !== file.name));
+  const handleRemoveImage = ({ url, name }: { url: string; name: string }) => {
+    setImageFiles((prev) => {
+      const index = prev.findIndex((item) => item.name === name);
+      if (index === -1) return prev; 
+      const newArr = [...prev];
+      newArr.splice(index, 1);
+      return newArr;
+    });
+
+    URL.revokeObjectURL(url);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const updatedData = {
-      nameProduct,
-      description,
-      descriptionFull,
-    };
-    console.log("Đang gửi data:", updatedData);
+
+    const formData = new FormData();
+
+    formData.append("options","edit")
+    formData.append("name-product", nameProduct);
+    formData.append("description-product", description);
+    formData.append("description-full-product", descriptionFull);
+    formData.append("idProduct", id?.toString() || "");
+    formData.append("price", price); 
+
+
+    imageFiles.forEach((item) => {
+      formData.append("image-file", item);
+    });
+
+    if (fileProduct) {
+      formData.append("file-product", fileProduct);
+    }
+
+    try {
+      const res = await fetch("/api/products/update_self_product", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("Failed to upload");
+
+      const data = await res.json();
+      console.log("ok data");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   if (isLoading) {
@@ -299,12 +339,7 @@ export default function EditProductPage() {
 
           <hr className="dark:border-gray-700" />
 
-          <EditableField
-            label="Mô tả đầy đủ"
-            value={descriptionFull}
-            onChange={setDescriptionFull}
-            isTextArea={true}
-          />
+          <EditableField label="Giá" value={price} onChange={setPrice} />
 
           <hr className="dark:border-gray-700" />
 
@@ -345,15 +380,17 @@ export default function EditProductPage() {
                   className="rounded-lg overflow-hidden"
                 >
                   {imageFiles.map((item) => {
+                    const url = URL.createObjectURL(item);
+                    const name = item.name;
                     return (
                       <SwiperSlide className="relative z-20">
                         <img
-                          src={URL.createObjectURL(item)}
-                          alt="Slide 1"
+                          src={url}
+                          alt="Slide"
                           className="w-full h-64 object-cover z-0"
                         />
                         <button
-                          onClick={() => console.log()}
+                          onClick={() => handleRemoveImage({ url, name })}
                           className="absolute top-2 right-2 z-50"
                         >
                           <FaTrash className="text-[#4f39f6] text-2xl" />
@@ -370,7 +407,7 @@ export default function EditProductPage() {
               htmlFor="file-image"
               className="block text-sm font-medium text-gray-700 dark:text-gray-300"
             >
-              Thêm File Mới
+              Thay đổi file
             </label>
             <input
               type="file"

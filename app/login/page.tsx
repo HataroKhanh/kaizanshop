@@ -4,7 +4,7 @@ import { signIn } from "next-auth/react";
 import { FormEvent, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-
+import { useRouter } from "next/navigation";
 const mapError = (code?: string) => {
   switch (code) {
     case "CredentialsSignin":
@@ -23,6 +23,7 @@ const mapError = (code?: string) => {
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
+  const router = useRouter()
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -37,6 +38,8 @@ export default function LoginPage() {
     setLoading(false);
 
     if (res?.error) return alert(mapError(res.error));
+    
+    router.push("/")
     // ok
   }
 

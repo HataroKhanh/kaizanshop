@@ -1,85 +1,141 @@
 "use client";
-import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import useSWR from "swr";
 import { CiSquarePlus } from "react-icons/ci";
 import Link from "next/link";
-import { formatPrice } from "@/utils/formatPrice";
 import Image from "next/image";
 
+interface Product {
+  idProduct: string;
+  nameProduct: string;
+  description: string;
+  price: number;
+  count?: number;
+  rate?: number;
+  images: { id: string }[];
+}
+
 export default function MyProductsPage() {
-  const { data: session } = useSession();
-  const swr = useSWR("/api/products/show_shop_self", (url) =>
-    fetch(url, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    }).then((res) => res.json())
+  const { data, isLoading } = useSWR<Product[]>(
+    "/api/products/show_shop_self",
+    (url : any) =>
+      fetch(url, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }).then((res) => res.json())
   );
+
+  const [imageUrls, setImageUrls] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (!data) return;
+
+    (async () => {
+      for (const item of data) {
+        const imgId = item.images?.[0]?.id;
+        if (!imgId || imageUrls[imgId]) continue;
+
+        try {
+          const res = await fetch(`/api/image/get_image?id=${imgId}`);
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          setImageUrls((prev) => ({ ...prev, [imgId]: url }));
+        } catch (err) {
+          console.error("Lỗi tải ảnh:", err);
+        }
+      }
+    })();
+  }, [data]);
+
+  useEffect(() => {
+    return () => {
+      Object.values(imageUrls).forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [imageUrls]);
 
   return (
     <>
       <Header />
-      <section className="flex flex-col mx-auto mt-10 p-20 pt-0 max-w-7xl">
-        <div className=" py-10  flex flex-row justify-between ">
-          <h1 className="text-2xl p-5 pl-0">Sản phẩm của tôi</h1>
-          <div className="flex flex-row gap-1 items-center px-5 pr-0">
-            <div className="flex flex-row gap-1 items-center bg-blue-900 p-2 rounded-xl ">
-              <CiSquarePlus className=""></CiSquarePlus>
-              <Link className="cursor-pointer" href="/myproducts/newproduct">
-                {" "}
-                Tạo sản phẩm mới
-              </Link>
-            </div>
-          </div>
+      <section className="flex flex-col mx-auto mt-10 p-8 pt-0 max-w-7xl transition-colors duration-300 bg-gray-50 dark:bg-gray-900 min-h-screen">
+        {/* Header */}
+        <div className="flex justify-between items-center py-8">
+          <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-100">
+            Sản phẩm của tôi
+          </h1>
+          <Link
+            href="/myproducts/newproduct"
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition-all active:scale-95 shadow-md hover:shadow-lg"
+          >
+            <CiSquarePlus className="text-xl" />
+            <span>Tạo sản phẩm mới</span>
+          </Link>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
-          {swr.isLoading
-            ? null
-            : swr.data.map((item: any) => {
-                return (
-                  <div className="flex flex-col p-5" key={item.idProduct}>
-                    <div className="flex flex-col gap-5">
-                      {" "}
-                      <div className="flex gap-5">
-                        <div className="flex-shrink-0">
-                          <Image
-                            src="/fallback.png"
-                            width={200}
-                            height={200}
-                            className="bg-white "
-                            alt={item.nameProduct}
-                          ></Image>
-                        </div>
-                        <div className="flex flex-col gap-2 min-w-0">
-                          <h2 className="text-2xl truncate">
-                            {item.nameProduct}
-                          </h2>
-                          <p className="truncate">{item.description}</p>
-                          {/* Thêm "truncate" vào đây để số dài không bị vỡ */}
-                          <h3 className="truncate">{item.price || 0}</h3>
-                        </div>
+
+        {/* Danh sách sản phẩm */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {isLoading ? (
+            <div className="text-center col-span-full text-gray-500 dark:text-gray-400">
+              Đang tải...
+            </div>
+          ) : !data || data.length === 0 ? (
+            <div className="text-center col-span-full text-gray-500 dark:text-gray-400">
+              Bạn chưa có sản phẩm nào
+            </div>
+          ) : (
+            data.map((item) => {
+              const imgId = item.images?.[0]?.id;
+              const imgUrl = imageUrls[imgId];
+
+              return (
+                <div
+                  key={item.idProduct}
+                  className="bg-white dark:bg-gray-800 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all rounded-2xl overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700"
+                >
+                  {/* Ảnh 1:1 */}
+                  <div className="relative w-full aspect-square bg-gray-100 dark:bg-gray-700">
+                    {imgUrl ? (
+                      <Image
+                        src={imgUrl}
+                        alt={item.nameProduct}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-300 dark:bg-gray-600 animate-pulse" />
+                    )}
+                  </div>
+
+                  {/* Nội dung */}
+                  <div className="p-4 flex flex-col justify-between flex-grow">
+                    <div>
+                      <h2 className="text-lg font-semibold truncate text-gray-800 dark:text-gray-100">
+                        {item.nameProduct}
+                      </h2>
+                      <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 mt-1">
+                        {item.description}
+                      </p>
+                      <h3 className="text-blue-600 dark:text-blue-400 font-bold mt-3">
+                        {item.price ? item.price.toLocaleString("vi-VN") : null}₫
+                      </h3>
+                    </div>
+
+                    <div className="flex justify-between items-center mt-4 text-sm text-gray-700 dark:text-gray-300">
+                      <div>
+                        <p>Lượt mua: {item.count || 0}</p>
+                        <p>Đánh giá: {item.rate || 0}</p>
                       </div>
-                      <div className="flex flex-row justify-between align-middle ">
-                        <div>
-                          <p>
-                            Lượt mua: <span>{item.count || 0}</span>
-                          </p>
-                          <p>
-                            Đánh giá: <span>{item.rate || 0}</span>
-                          </p>
-                        </div>
-                        <div className="flex items-center">
-                          <Link href={`/products/${item.idProduct}`}>
-                            <button className="cursor-pointer border px-5 py-2 rounded-2xl hover:animate-pulse">
-                              Xem thêm
-                            </button>
-                          </Link>
-                        </div>
-                      </div>
+                      <Link href={`/products/${item.idProduct}`}>
+                        <button className="cursor-pointer border border-gray-300 dark:border-gray-600 px-4 py-2 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/40 transition-all">
+                          Xem thêm
+                        </button>
+                      </Link>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              );
+            })
+          )}
         </div>
       </section>
     </>

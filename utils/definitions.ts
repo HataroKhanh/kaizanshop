@@ -1,21 +1,29 @@
+import { Session } from "next-auth";
+interface IComment {
+  user: Session["user"];
+  text: string;
+  rate: number;
+  createdAt: Date;
+}
 export type Product = {
-  id: string;
-  title: string;
+  idProduct: string;
+  nameProduct: string;
+  description: string;
+  owner: Session["user"];
   price: number;
-  currency: string;
-  image: string;
-  shopId: string;
-  rating?: number;
+  images: {
+    name: string;
+    id: string;
+  }[];
+  file: {
+    fileName: string;
+    fileId: string;
+    hashSha256: string;
+  };
+  comment : IComment[]
+  rate: number;
   sold?: number;
   tags?: string[];
-};
-
-export type Shop = {
-  id: string;
-  name: string;
-  avatar: string;
-  banner: string;
-  rating: number;
-  products: number;
-  isVerified?: boolean;
+  createdAt: Date; // ✅ Đã thêm
+  updatedAt: Date; // ✅ Đã thêm
 };

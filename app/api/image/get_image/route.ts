@@ -16,6 +16,7 @@ export async function GET(req: Request) { // Bỏ 'res: Response' đi
       fileId: fileId,
       fields: "mimeType, name",
     });
+    
 
     const mimeType = metaDataResponse.data.mimeType;
 

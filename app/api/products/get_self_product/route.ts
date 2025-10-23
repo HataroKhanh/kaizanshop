@@ -5,13 +5,6 @@ import { authOptions } from "@/auth.config";
 
 export async function GET(req: Request) {
   const session = await getServerSession(authOptions);
-  if (!session)
-    return NextResponse.json(
-      { error: "Fail to get product, please login to continue" },
-      {
-        status: 401,
-      }
-    );
 
   const { searchParams } = new URL(req.url);
 
@@ -37,12 +30,7 @@ export async function GET(req: Request) {
   if (!product)
     return NextResponse.json({ error: "Product not found" }, { status: 404 });
 
-  const check: Boolean = product.owner.id === session.user.id;
-  if (!check)
-    return NextResponse.json(
-      { error: "You are not the owner of this product" },
-      { status: 401 }
-    );
+  const check: Boolean = product.owner.id === session?.user.id;
 
   return NextResponse.json(product);
 }
