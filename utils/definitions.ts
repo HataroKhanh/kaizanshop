@@ -1,11 +1,15 @@
+import { ObjectId } from "mongodb";
 import { Session } from "next-auth";
+
 interface IComment {
   user: Session["user"];
   text: string;
   rate: number;
   createdAt: Date;
+  idComment : string
 }
 export type Product = {
+  _id : ObjectId
   idProduct: string;
   nameProduct: string;
   description: string;
@@ -24,6 +28,6 @@ export type Product = {
   rate: number;
   sold?: number;
   tags?: string[];
-  createdAt: Date; // ✅ Đã thêm
-  updatedAt: Date; // ✅ Đã thêm
+  createdAt: Date; 
+  updatedAt: Date; 
 };

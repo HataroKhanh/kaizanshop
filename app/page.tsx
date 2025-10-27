@@ -59,7 +59,7 @@ export default function HomePage() {
           </div>
 
           {/* Image */}
-          <a href="https://github.com/HataroKhanh/Fly_With_Me">
+          <a href="https://github.com/HataroKhanh/Fly_With_Me" target="_blank">
             <div className="relative cursor-pointer">
               <div className="rounded-xl overflow-hidden shadow-lg ">
                 <img

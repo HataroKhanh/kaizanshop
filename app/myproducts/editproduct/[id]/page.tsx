@@ -27,8 +27,6 @@ function EditableField({
 
   if (isEditing) {
     return (
-  
-
       <div className="relative p-4">
         <label
           htmlFor={label}
@@ -44,7 +42,6 @@ function EditableField({
             onBlur={() => setIsEditing(false)}
             autoFocus
             rows={5}
-          
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-base"
           />
         ) : (
@@ -54,7 +51,7 @@ function EditableField({
             value={value}
             onChange={(e) => onChange(e.target.value)}
             onBlur={() => setIsEditing(false)}
-            autoFocus  
+            autoFocus
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-base"
           />
         )}
@@ -148,7 +145,7 @@ export default function EditProductPage() {
       .then((data) => {
         if (data && !data.error) {
           setDataProduct(data);
-          setPrice(dataProduct?.price?.toString())
+          setPrice(dataProduct?.price?.toString());
 
           setListId([
             data.file.fileId,
@@ -171,6 +168,7 @@ export default function EditProductPage() {
   const [descriptionFull, setDescriptionFull] = useState<string>("");
   const [fileProduct, setFileProduct] = useState<File | null>(null);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleAddImage = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -187,7 +185,7 @@ export default function EditProductPage() {
         setNameProduct(dataProduct.nameProduct || "");
         setDescription(dataProduct.description || "");
         setDescriptionFull(dataProduct.descriptionFull || "");
-        setPrice(dataProduct.price || "")
+        setPrice(dataProduct.price || "");
 
         const Images = Array.from(dataProduct.images);
 
@@ -201,7 +199,7 @@ export default function EditProductPage() {
               }
 
               const blob = await res.blob();
-              let filename = "image.jpg"; 
+              let filename = "image.jpg";
 
               const disposition = res.headers.get("Content-Disposition");
               if (disposition) {
@@ -236,10 +234,26 @@ export default function EditProductPage() {
     loadProductData();
   }, [dataProduct]);
 
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isUploading) {
+        e.preventDefault();
+        e.returnValue = ""; // Bắt buộc với Chrome
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [isUploading]);
+
   const handleRemoveImage = ({ url, name }: { url: string; name: string }) => {
     setImageFiles((prev) => {
       const index = prev.findIndex((item) => item.name === name);
-      if (index === -1) return prev; 
+      if (index === -1) return prev;
       const newArr = [...prev];
       newArr.splice(index, 1);
       return newArr;
@@ -247,19 +261,27 @@ export default function EditProductPage() {
 
     URL.revokeObjectURL(url);
   };
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+    };
 
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsUploading(true)
 
     const formData = new FormData();
 
-    formData.append("options","edit")
+    formData.append("options", "edit");
     formData.append("name-product", nameProduct);
     formData.append("description-product", description);
     formData.append("description-full-product", descriptionFull);
     formData.append("idProduct", id?.toString() || "");
-    formData.append("price", price); 
-
+    formData.append("price", price);
 
     imageFiles.forEach((item) => {
       formData.append("image-file", item);
@@ -278,9 +300,15 @@ export default function EditProductPage() {
       if (!res.ok) throw new Error("Failed to upload");
 
       const data = await res.json();
-      console.log("ok data");
+      if (data.error) {
+        return "fail data :()()()()()()"
+      }
+      console.log("ok data abcxyz adidaphat");
     } catch (err) {
       console.error(err);
+    }
+    finally {
+      setIsUploading(false)
     }
   };
 

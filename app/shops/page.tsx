@@ -2,6 +2,7 @@
 import Link from "next/link";
 import Header from "../components/Header";
 import useSWR from "swr";
+import { Product } from "@/utils/definitions";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -37,13 +38,13 @@ export default function ShopsPage() {
         </h1>
 
         <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {data.map((product: any) => {
+          {data.map((product: Product) => {
             const mainImage = product.images?.[0]?.id
               ? `/api/image/get_image?id=${product.images[0].id}`
               : "/placeholder.png";
 
             return (
-              <Link href={`/products/${product.idProduct}`}>
+              <Link href={`/products/${product.idProduct}`} key={product.idProduct}>
                 <div
                   key={product.idProduct}
                   className="p-2 bg-[#1e2939] rounded-[5px] flex flex-col gap-2 hover:shadow-lg transition-all duration-200 border border-[#323d4e]"
@@ -68,12 +69,12 @@ export default function ShopsPage() {
                         {product.price?.toLocaleString() || 0} đ
                       </p>
                     </div>
-
+s
                     {/* Người bán */}
                     <div className="flex flex-row items-center">
                       <img
-                        src={product.owner?.image}
-                        alt={product.owner?.name}
+                        src={product.owner?.image || "/default-avatar.png"}
+                        alt={product.owner?.name || "Chưa đặt tên"}
                         className="h-10 w-10 rounded-full"
                       />
                       <div className="flex flex-col ml-5 gap-1 text-gray-300 text-sm">

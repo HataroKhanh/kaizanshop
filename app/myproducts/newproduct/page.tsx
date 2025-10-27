@@ -26,6 +26,22 @@ export default function NewProductPage() {
   const [infoError, setInfoError] = useState<boolean>(false);
 
   useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+    };
+
+    if (percentProcess !== 0 && percentProcess < 100 && !infoError) {
+      window.addEventListener("beforeunload", handleBeforeUnload);
+    } else {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    }
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [percentProcess]);
+
+  useEffect(() => {
     if (percentProcess !== 0 && percentProcess < 100 && !infoError) {
       setInfoProcess({
         className: "text-[#ffc100]",
@@ -203,7 +219,6 @@ export default function NewProductPage() {
             </div>
             {/* FORM */}
             <form
-              encType="multipart/form-data"
               action={handleSubmit}
               method="POST"
               className="flex-1 bg-white/5 backdrop-blur-sm p-6 sm:p-8 rounded-2xl shadow-lg border border-white/10"
