@@ -30,3 +30,5 @@ pnpm-debug.log*
 # File hệ điều hành (OS Files)
 .DS_Store
 Thumbs.db
+
+.env

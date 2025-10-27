@@ -10,6 +10,7 @@ const nextConfig = {
       { protocol: "https", hostname: "drive.usercontent.google.com" },
     ],
   },
+  output: 'standalone'
 };
 
 module.exports = nextConfig;
