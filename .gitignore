@@ -15,6 +15,7 @@
 # File chứa các biến môi trường nhạy cảm, API keys, mật khẩu...
 # Luôn luôn ignore file này!
 .env*.local
+.env
 
 # File log lỗi
 npm-debug.log*
@@ -31,4 +32,3 @@ pnpm-debug.log*
 .DS_Store
 Thumbs.db
 
-.env
