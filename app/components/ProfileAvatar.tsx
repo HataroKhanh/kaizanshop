@@ -43,7 +43,7 @@ export default function ProfileAvatar({
           alt="avatar"
           width={40}
           height={40}
-          className="rounded-full border border-neutral-300 dark:border-neutral-700 bg-white" 
+          className="rounded-full border border-neutral-300 dark:border-neutral-700 bg-white"
         />
       </button>
 

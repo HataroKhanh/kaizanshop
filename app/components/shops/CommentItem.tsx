@@ -5,8 +5,8 @@ interface CommentItemProps {
   comment: {
     idComment: string;
     user: {
-      name: string;
-      image: string;
+      name?: string | null;
+      image?: string | null;
     };
     rate: number;
     text: string;
@@ -21,12 +21,12 @@ export const CommentItem = ({ comment, onRemove }: CommentItemProps) => {
         <div className="flex items-center gap-2 mb-2 justify-between">
           <div className="flex gap-2">
             <img
-              src={`/${comment.user?.image as string}`}
-              alt={comment.user?.name as string}
+              src={`/${comment.user?.image || "default-avatar.svg"}`}
+              alt={comment.user?.name || "User avatar"}
               className="w-8 h-8 rounded-full bg-white"
             />
             <span className="font-semibold text-gray-800 dark:text-gray-200">
-              {comment.user.name}
+              {comment.user?.name || "Anonymous"}
             </span>
           </div>
           <div onClick={() => onRemove(comment.idComment)}>

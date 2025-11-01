@@ -41,11 +41,7 @@ export default function Header() {
               Về Kaizan
             </Link> 
           </nav>
-
-
-          {/* Avatar */}
-          {console.log(sessionStatus)
-          }
+          
           {sessionStatus === "authenticated" ? (
             <ProfileAvatar sessionData={sessionData}></ProfileAvatar>
           ) : (

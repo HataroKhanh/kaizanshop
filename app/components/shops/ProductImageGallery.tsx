@@ -23,7 +23,7 @@ export const ProductImageGallery = ({ images }: ProductImageGalleryProps) => {
             <img
               src={`/api/image/get_image?id=${img.id}`}
               alt={img.name}
-              className="w-full h-96 object-cover rounded-lg"
+              className="w-100 h-96 object-cover rounded-lg"
             />
           </SwiperSlide>
         ))}

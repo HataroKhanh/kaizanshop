@@ -63,7 +63,7 @@ export const CommentsSection = ({ product, onRefresh }: CommentsSectionProps) =>
     }
   };
 
-  const handleRemoveComment = async ({ idComment }: { idComment: string }) => {
+  const handleRemoveComment = async (idComment: string) => {
     if (!idComment) return;
 
     const formData = new FormData();
