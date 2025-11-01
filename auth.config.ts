@@ -36,6 +36,7 @@ export const authOptions: NextAuthOptions = {
           id: String(user._id),
           email: user.email,
           name: user.name ?? null,
+          image: user.image ?? "default-avatar.svg",
         };
       },
     }),
@@ -51,18 +52,14 @@ export const authOptions: NextAuthOptions = {
   pages: { signIn: "/auth/signin", error: "/auth/signin" },
   callbacks: {
     async jwt({ token, user }) {
-      // Khi đăng nhập, đối tượng 'user' sẽ có sẵn
-      // 'user.id' đã được MongoAdapter tự động map từ '_id'
       if (user) {
         token.id = user.id;
       }
       return token;
     },
     async session({ session, token }) {
-      // Gán 'id' từ token vào 'session.user.id'
-      // Đảm bảo rằng session.user là một đối tượng
       if (session.user) {
-        session.user.id = token.id as string; // 'token.id' là cái chúng ta đã gán ở callback 'jwt'
+        session.user.id = token.id as string;
       }
       return session;
     },

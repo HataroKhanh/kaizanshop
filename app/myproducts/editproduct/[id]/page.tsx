@@ -1,7 +1,10 @@
 "use client";
+
 import Header from "@/app/components/Header";
+import EditableField from "@/app/components/EditableField";
+import RemoveProduct from "@/app/components/RemoveProduct";
 import { useEffect, useState, ChangeEvent } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -9,125 +12,6 @@ import "swiper/css/navigation";
 
 import { Pagination, Navigation, Scrollbar, A11y } from "swiper/modules";
 import { FaTrash } from "react-icons/fa";
-
-type EditableFieldProps = {
-  label: string;
-  value: string;
-  onChange: (newValue: string) => void;
-  isTextArea?: boolean;
-};
-
-function EditableField({
-  label,
-  value,
-  onChange,
-  isTextArea = false,
-}: EditableFieldProps) {
-  const [isEditing, setIsEditing] = useState(false);
-
-  if (isEditing) {
-    return (
-      <div className="relative p-4">
-        <label
-          htmlFor={label}
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-        >
-          {label}
-        </label>
-        {isTextArea ? (
-          <textarea
-            id={label}
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            onBlur={() => setIsEditing(false)}
-            autoFocus
-            rows={5}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-base"
-          />
-        ) : (
-          <input
-            type="text"
-            id={label}
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            onBlur={() => setIsEditing(false)}
-            autoFocus
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-base"
-          />
-        )}
-      </div>
-    );
-  }
-
-  return (
-    <div
-      onClick={() => setIsEditing(true)}
-      title="Click để chỉnh sửa"
-      className="group relative cursor-pointer rounded-lg border border-transparent p-4 transition-all hover:bg-gray-50 dark:hover:bg-gray-800"
-    >
-      <span className="absolute right-4 top-4 text-gray-400 opacity-0 transition-opacity group-hover:opacity-100">
-        ✏️
-      </span>
-      <strong className="block text-sm font-medium text-gray-500 dark:text-gray-400">
-        {label}
-      </strong>
-      <span
-        style={{ whiteSpace: "pre-wrap" }}
-        className="mt-1 block text-base text-gray-900 dark:text-white break-words"
-      >
-        {value || <span className="text-gray-400">(Trống)</span>}
-      </span>
-    </div>
-  );
-}
-
-function RemoveProduct({ idProduct }: { idProduct: string }) {
-  const [checkRemoveProduct, setChangeRemoveProduct] = useState(false);
-  const router = useRouter();
-
-  const handleRemoveProduct = () => {
-    if (idProduct !== "") {
-      const res = fetch("/api/products/remove_product", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: idProduct,
-        }),
-      })
-        .then((data) => data.json())
-        .then((data) => {
-          if (data?.success) {
-            router.push("/myproducts");
-          }
-        });
-    }
-  };
-  return checkRemoveProduct ? (
-    <div className="flex flex-row gap-8 justify-end">
-      <button
-        className="w-22 py-2 border rounded-[5px] hover:bg-red-500 cursor-pointer"
-        onClick={() => setChangeRemoveProduct(false)}
-      >
-        Huỷ
-      </button>
-      <button
-        className="w-22 py-2 border rounded-[5px] hover:bg-green-500 cursor-pointer"
-        onClick={() => handleRemoveProduct()}
-      >
-        Tiếp tục
-      </button>
-    </div>
-  ) : (
-    <button
-      onClick={() => setChangeRemoveProduct(true)}
-      className="border px-3 py-2 rounded-[5px] cursor-pointer hover:bg-red-500 duration-200"
-    >
-      Xoá sản phẩm
-    </button>
-  );
-}
 
 export default function EditProductPage() {
   const { id } = useParams();
@@ -234,7 +118,6 @@ export default function EditProductPage() {
     loadProductData();
   }, [dataProduct]);
 
-
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (isUploading) {
@@ -261,6 +144,7 @@ export default function EditProductPage() {
 
     URL.revokeObjectURL(url);
   };
+
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault();
@@ -270,9 +154,10 @@ export default function EditProductPage() {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsUploading(true)
+    setIsUploading(true);
 
     const formData = new FormData();
 
@@ -301,14 +186,13 @@ export default function EditProductPage() {
 
       const data = await res.json();
       if (data.error) {
-        return "fail data :()()()()()()"
+        return "fail data :()()()()()()";
       }
       console.log("ok data abcxyz adidaphat");
     } catch (err) {
       console.error(err);
-    }
-    finally {
-      setIsUploading(false)
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -387,11 +271,7 @@ export default function EditProductPage() {
                 id="file-image"
                 multiple
                 onChange={handleAddImage}
-                className="mt-2 block w-full text-sm text-gray-500
-          file:mr-4 file:rounded-full file:border-0 file:bg-indigo-50
-          file:py-2 file:px-4 file:text-sm file:font-semibold file:text-indigo-700
-          hover:file:bg-indigo-100 dark:text-gray-400 dark:file:bg-indigo-900
-          dark:file:text-indigo-300 dark:hover:file:bg-indigo-800"
+                className="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:rounded-full file:border-0 file:bg-indigo-50 file:py-2 file:px-4 file:text-sm file:font-semibold file:text-indigo-700 hover:file:bg-indigo-100 dark:text-gray-400 dark:file:bg-indigo-900 dark:file:text-indigo-300 dark:hover:file:bg-indigo-800"
               />
             </div>
 
@@ -407,11 +287,11 @@ export default function EditProductPage() {
                   scrollbar={{ draggable: true }}
                   className="rounded-lg overflow-hidden"
                 >
-                  {imageFiles.map((item) => {
+                  {imageFiles.map((item, index) => {
                     const url = URL.createObjectURL(item);
                     const name = item.name;
                     return (
-                      <SwiperSlide className="relative z-20">
+                      <SwiperSlide key={index} className="relative z-20">
                         <img
                           src={url}
                           alt="Slide"

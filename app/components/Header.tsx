@@ -21,7 +21,6 @@ export default function Header() {
           </Link>
 
           {/* Nav menu */}
-
           <nav>
             <Link
               className="rounded-xl px-3 py-1.5 text-sm font-medium hover:bg-neutral-100 dark:hover:bg-neutral-900"
@@ -45,6 +44,8 @@ export default function Header() {
 
 
           {/* Avatar */}
+          {console.log(sessionStatus)
+          }
           {sessionStatus === "authenticated" ? (
             <ProfileAvatar sessionData={sessionData}></ProfileAvatar>
           ) : (

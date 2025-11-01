@@ -5,8 +5,8 @@ import bcrypt from "bcryptjs";
 export async function POST(req: Request) {
   const { email, password, name } = await req.json();
   const db = (await clientPromise).db("kaizanshop");
-  console.log(email,password,name);
-  
+  console.log(email, password, name);
+
   const exists = await db.collection("user_credentials").findOne({ email });
   if (exists)
     return NextResponse.json({ error: "Email đã tồn tại" }, { status: 400 });
@@ -17,6 +17,7 @@ export async function POST(req: Request) {
     name: name ?? "Chưa có tên",
     passwordHash,
     createdAt: new Date(),
+    image: "default-avatar.svg",
   });
 
   return NextResponse.json({ id: String(insertedId) }, { status: 201 });

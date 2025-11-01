@@ -15,11 +15,9 @@ export async function middleware(req: Request & { headers: Headers }) {
     return NextResponse.redirect(url);
   }
 
-
-
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/myproducts/:path*"],
+  matcher: ["/myproducts/:path*", "/profile"],
 };

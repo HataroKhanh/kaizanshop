@@ -42,23 +42,40 @@ export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session)
+    if (!session) {
       return NextResponse.json({ error: "Login bro???" }, { status: 405 });
+    }
 
     const data = await request.formData();
-    const owner = "khanh";
 
-    const file: File | null = data.get("file-product") as unknown as File;
+    const file = data.get("file-product") as File | null;
+    if (!file) {
+      return NextResponse.json(
+        { error: "Missing main product file" },
+        { status: 400 }
+      );
+    }
 
     const buffer = Buffer.from(await file.arrayBuffer());
-
     const sha256 = HashSHA256(buffer);
 
     const nameProduct = data.get("name-product");
-    const descriptionProduct = data.get("description-product");
-    const price = data.get("price");
+    if (!nameProduct)
+      return NextResponse.json({ error: "Name not empty" }, { status: 400 });
 
-    const fileImages: File[] = data.getAll("file-image") as File[];
+    const descriptionProduct = data.get("description-product");
+
+    const _price = data.get("price");
+    if (!_price) {
+      return NextResponse.json({ error: "Missing price" }, { status: 400 });
+    }
+
+    const price = Number(_price);
+    if (isNaN(price) || price < 0 || price > 10000000) {
+      return NextResponse.json({ error: "Price error" }, { status: 400 });
+    }
+
+    const fileImages = data.getAll("file-image") as File[];
 
     const client = await clientPromise;
     const db = client.db("kaizanshop");

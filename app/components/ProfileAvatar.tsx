@@ -39,11 +39,11 @@ export default function ProfileAvatar({
       >
         <span className="text-sm font-medium">{sessionData.user?.name}</span>
         <Image
-          src={sessionData.user?.image || "/default-avatar.svg"}
+          src={`/${sessionData.user?.image!}`}
           alt="avatar"
           width={40}
           height={40}
-          className="rounded-full border border-neutral-300 dark:border-neutral-700"
+          className="rounded-full border border-neutral-300 dark:border-neutral-700 bg-white" 
         />
       </button>
 
