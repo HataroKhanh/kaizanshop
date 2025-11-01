@@ -15,9 +15,10 @@ export async function POST(request: NextRequest) {
 
     const body: SePayWebhookPayload = await request.json();
 
-    if (body.transferType === 'in' && body.transferAmount > 0) {
-      console.log(`Ghi nhận tiền vào: ${body.transferAmount} VND`);
+    if (!(body.transferType === 'in' && body.transferAmount > 0)) {
+        return NextResponse.json({ error: 'error type' }, { status: 400 });
     }
+    
 
     return NextResponse.json({ 
       success: true, 
