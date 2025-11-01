@@ -15,6 +15,10 @@ export default function AboutAuthor() {
               Tôi là sinh viên đang theo học tại trường <strong className="text-neutral-900 dark:text-neutral-100">Đại học Công nghệ Giao thông Vận tải</strong>, 
               với niềm đam mê về công nghệ và phát triển phần mềm.
             </p>
+            <p className="text-neutral-600 dark:text-neutral-400">
+              <strong className="text-neutral-900 dark:text-neutral-100">Điểm mạnh:</strong> Tôi mạnh về <strong className="text-blue-600 dark:text-blue-400">Python</strong>, 
+              có kinh nghiệm trong việc phát triển ứng dụng, crawl data, và xử lý dữ liệu với Python.
+            </p>
           </div>
         </div>
       </div>
