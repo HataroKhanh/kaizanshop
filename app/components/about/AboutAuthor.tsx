@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function AboutAuthor() {
   return (
     <section className="mb-12">
@@ -5,8 +7,8 @@ export default function AboutAuthor() {
       <div className="bg-neutral-50 dark:bg-neutral-900 rounded-2xl p-8 border border-neutral-200 dark:border-neutral-800">
         <div className="flex items-start gap-6">
           <div className="flex-shrink-0">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white text-2xl font-bold">
-              K
+            <div className="w-20 h-20 relative rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white text-2xl font-bold">
+              <Image src="/admin.png" fill className="object-cover rounded-full"  alt="author"/>
             </div>
           </div>
           <div className="flex-1">
