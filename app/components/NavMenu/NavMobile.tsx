@@ -23,7 +23,7 @@ export default function NavMobile() {
 
   return (
     <>
-      <div className="relative">
+      <div className="relative block md:hidden">
         {/* Nút toggle */}
         <button
           onClick={() => setOpenNav(!openNav)}
