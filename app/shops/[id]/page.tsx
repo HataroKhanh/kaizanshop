@@ -3,7 +3,7 @@ import Header from "@/app/components/Header";
 import { useParams, useRouter } from "next/navigation";
 import useSWR from "swr";
 import { useSession } from "next-auth/react";
-import { Product } from "@/utils/definitions";
+import { Product } from "@/types/definitions";
 import { ProductImageGallery } from "@/app/components/shops/ProductImageGallery";
 import { ProductDetails } from "@/app/components/shops/ProductDetails";
 import { CommentsSection } from "@/app/components/shops/CommentsSection";

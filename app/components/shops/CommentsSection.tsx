@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { AiOutlineLoading } from "react-icons/ai";
 import { CommentItem } from "./CommentItem";
-import { Product } from "@/utils/definitions";
+import { Product } from "@/types/definitions";
 
 interface CommentsSectionProps {
   product: Product;

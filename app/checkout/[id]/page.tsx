@@ -3,7 +3,7 @@
 
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
-import { Product } from "@/utils/definitions";
+import { Product } from "@/types/definitions";
 import ProductTable from "@/app/components/checkout/ProductTable";
 import PaymentCard from "@/app/components/checkout/PaymentCard";
 import clientPromise from "@/lib/mongodb";

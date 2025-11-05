@@ -3,7 +3,7 @@ import drive from "@/lib/newAuth";
 import { Readable } from "stream";
 import clientPromise from "@/lib/mongodb";
 import HashSHA256 from "@/utils/hashSha256";
-import { Product } from "@/utils/definitions";
+import { Product } from "@/types/definitions";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/auth.config";
 import { ObjectId } from "mongodb";

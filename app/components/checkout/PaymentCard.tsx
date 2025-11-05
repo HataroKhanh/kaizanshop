@@ -1,6 +1,6 @@
 "use client";
 
-import { Product } from "@/utils/definitions";
+import { Product } from "@/types/definitions";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

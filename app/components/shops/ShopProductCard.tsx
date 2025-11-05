@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Product } from "@/utils/definitions";
+import { Product } from "@/types/definitions";
 
 interface ShopProductCardProps {
   product: Product;

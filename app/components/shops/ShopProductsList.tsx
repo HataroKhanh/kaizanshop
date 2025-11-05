@@ -1,5 +1,5 @@
 "use client";
-import { Product } from "@/utils/definitions";
+import { Product } from "@/types/definitions";
 import { ShopProductCard } from "./ShopProductCard";
 
 interface ShopProductsListProps {
