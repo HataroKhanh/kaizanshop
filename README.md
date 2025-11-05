@@ -2,6 +2,8 @@
 
 A modern e-commerce platform built with Next.js 15, MongoDB, and NextAuth.js.
 
+🌐 **Live Demo:** [kaizan.site](https://kaizan.site)
+
 ## Features
 
 - 🔐 Multiple authentication methods (Credentials, Google, GitHub)
