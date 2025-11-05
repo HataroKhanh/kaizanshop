@@ -62,8 +62,8 @@ export const SignupForm = () => {
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="flex items-center justify-between gap-5">
-              <div className="flex-1 flex flex-col">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-5">
+              <div className="flex-1 flex flex-col w-full">
                 <label
                   htmlFor="first-name"
                   className="text-sm font-medium text-gray-700 dark:text-gray-300"
@@ -78,7 +78,7 @@ export const SignupForm = () => {
                   className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-neutral-900 placeholder:text-gray-500 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500"
                 />
               </div>
-              <div className="flex-1 flex flex-col">
+              <div className="flex-1 flex flex-col w-full">
                 <label
                   htmlFor="last-name"
                   className="text-sm font-medium text-gray-700 dark:text-gray-300"

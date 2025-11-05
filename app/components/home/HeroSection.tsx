@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export const HeroSection = () => {
   return (
-    <section className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
       <div className="grid md:grid-cols-2 gap-12 md:items-center">
         {/* Text */}
         <div>

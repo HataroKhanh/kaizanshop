@@ -1,49 +1,73 @@
-"use client";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import { Navigation, Pagination, A11y } from "swiper/modules";
-import Image from "next/image";
+'use client';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
+import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
+import { FaTrash } from 'react-icons/fa';
 
-interface ProductImageGalleryProps {
-  images: { id: string; name: string }[];
+interface ImageItem {
+  id: string;
+  name: string;
 }
 
-export const ProductImageGallery = ({ images }: ProductImageGalleryProps) => {
-  if (images?.length > 0) {
+interface ProductImageGalleryProps {
+  images: ImageItem[];
+  onRemoveImage?: (image: ImageItem) => void;
+}
+
+export const ProductImageGallery = ({
+  images,
+  onRemoveImage,
+}: ProductImageGalleryProps) => {
+  if (!images?.length) {
     return (
-      <Swiper
-        modules={[Navigation, Pagination, A11y]}
-        navigation
-        pagination={{ clickable: true }}
-        spaceBetween={20}
-        slidesPerView="auto"
-        loop={false}
-        className="p-10"
-      >
-        {images.map((img: any) => (
-          // 1. Chỉ giữ lại flex-shrink-0 trên SwiperSlide
-          // 2. Thêm "key" prop là bắt buộc khi dùng .map()
-          <SwiperSlide key={img.id} className="flex-shrink-0">
-            {/* 3. Tạo một div bọc bên trong để chứa styling */}
-            <div className="relative aspect-[1/1] overflow-hidden rounded-lg">
-              <Image
-                src={`/api/image/get_image?id=${img.id}`}
-                alt={img.name}
-                fill
-                className="object-cover"
-              />
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+      <div className="w-full h-64 bg-gray-200 dark:bg-gray-700 flex items-center justify-center rounded-lg text-gray-500">
+        Chưa có ảnh
+      </div>
     );
   }
 
   return (
-    <div className="w-full h-96 bg-gray-200 dark:bg-gray-700 flex items-center justify-center rounded-lg text-gray-500">
-      Chưa có ảnh
-    </div>
+    <Swiper
+      modules={[Navigation, Pagination, Scrollbar, A11y]}
+      spaceBetween={12}
+      slidesPerView={1}
+      navigation
+      pagination={{ clickable: true }}
+      scrollbar={{ draggable: true }}
+      loop={false}
+      autoHeight
+      className="rounded-lg overflow-hidden max-w-full"
+      breakpoints={{
+        640: { slidesPerView: 1, spaceBetween: 12 },
+        768: { slidesPerView: 1, spaceBetween: 16 },
+        1024: { slidesPerView: 1, spaceBetween: 20 },
+      }}
+    >
+      {images.map((img) => {
+        const url = `/api/image/get_image?id=${img.id}`;
+        const name = img.name;
+
+        return (
+          <SwiperSlide key={img.id} className="relative z-20">
+            {/* === WRAPPER GIỚI HẠN CHIỀU RỘNG === */}
+            <div className="w-full overflow-hidden rounded-lg">
+              <img src={url} alt={name} className="w-full aspect-square object-cover" />
+            </div>
+
+            {onRemoveImage && (
+              <button
+                onClick={() => onRemoveImage(img)}
+                className="absolute top-2 right-2 z-50 bg-white/90 backdrop-blur rounded-full p-1 shadow-md hover:bg-gray-100 sm:flex hidden"
+              >
+                <FaTrash className="text-[#4f39f6] text-xl" />
+              </button>
+            )}
+          </SwiperSlide>
+        );
+      })}
+    </Swiper>
   );
 };

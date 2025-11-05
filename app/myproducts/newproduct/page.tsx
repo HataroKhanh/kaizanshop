@@ -129,14 +129,14 @@ export default function NewProductPage() {
   return (
     <>
       <Header />
-      <section className="p-6 sm:p-10 max-w-7xl mx-auto">
-        <div className="flex flex-col gap-8">
-          <h1 className="text-3xl sm:text-5xl font-semibold text-center sm:text-left text-white">
+      <section className="p-4 sm:p-6 lg:p-10 max-w-7xl mx-auto">
+        <div className="flex flex-col gap-6 sm:gap-8">
+          <h1 className="text-2xl sm:text-3xl lg:text-5xl font-semibold text-center sm:text-left text-white">
             Tạo sản phẩm mới
           </h1>
 
           {/* Layout responsive */}
-          <div className="flex flex-col lg:flex-row gap-10 mt-6">
+          <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 lg:gap-10 mt-4 sm:mt-6">
             <ProductPreview
               nameProduct={nameProduct}
               description={description}

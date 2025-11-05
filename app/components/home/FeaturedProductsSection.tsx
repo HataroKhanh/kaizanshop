@@ -23,7 +23,7 @@ export const FeaturedProductsSection = ({
   products,
 }: FeaturedProductsSectionProps) => {
   return (
-    <section className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 mt-20 mb-20">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20 mb-20">
       <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">
         🌟 Các sản phẩm nổi bật
       </h2>

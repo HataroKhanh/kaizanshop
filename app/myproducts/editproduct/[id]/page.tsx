@@ -280,12 +280,18 @@ export default function EditProductPage() {
               <div className="w-full max-w-md mx-auto">
                 <Swiper
                   modules={[Navigation, Pagination, Scrollbar, A11y]}
-                  spaceBetween={20}
+                  spaceBetween={12}
                   slidesPerView={1}
                   navigation
                   pagination={{ clickable: true }}
                   scrollbar={{ draggable: true }}
-                  className="rounded-lg overflow-hidden"
+                  autoHeight
+                  className="rounded-lg overflow-hidden max-w-full"
+                  breakpoints={{
+                    640: { slidesPerView: 1, spaceBetween: 12 },
+                    768: { slidesPerView: 1, spaceBetween: 16 },
+                    1024: { slidesPerView: 1, spaceBetween: 20 },
+                  }}
                 >
                   {imageFiles.map((item, index) => {
                     const url = URL.createObjectURL(item);
@@ -295,11 +301,11 @@ export default function EditProductPage() {
                         <img
                           src={url}
                           alt="Slide"
-                          className="w-full h-64 object-cover z-0"
+                          className="w-full aspect-square object-cover z-0"
                         />
                         <button
                           onClick={() => handleRemoveImage({ url, name })}
-                          className="absolute top-2 right-2 z-50"
+                          className="absolute top-2 right-2 z-50 bg-white/90 backdrop-blur rounded-full p-1 shadow-md hover:bg-gray-100 sm:flex hidden"
                         >
                           <FaTrash className="text-[#4f39f6] text-2xl" />
                         </button>

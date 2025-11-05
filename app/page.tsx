@@ -4,9 +4,10 @@ import Footer from "./components/Footer";
 import useSWR from "swr";
 import { HeroSection } from "./components/home/HeroSection";
 import { FeaturedProductsSection } from "./components/home/FeaturedProductsSection";
+import { ShopProductsList } from "./components/shops/ShopProductsList";
 
 export default function HomePage() {
-  const swr = useSWR("/api/products/show_shop", (url) =>
+  const {data,error,isLoading} = useSWR("/api/products/show_shop", (url) =>
     fetch(url, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -17,7 +18,7 @@ export default function HomePage() {
     <>
       <Header />
       <HeroSection />
-      <FeaturedProductsSection isLoading={swr.isLoading} products={swr.data} />
+      <ShopProductsList isLoading={isLoading} error={error} data={data} />
       <Footer />
     </>
   );

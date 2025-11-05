@@ -3,6 +3,10 @@
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import ProfileAvatar from "./ProfileAvatar";
+import NavDesktop from "./NavMenu/NavDesktop";
+import NavMobile from "./NavMenu/NavMobile";
+import { authLinks } from "./NavMenu/dataNavMenu";
+
 export default function Header() {
   const session = useSession();
   const sessionData = session.data;
@@ -21,43 +25,24 @@ export default function Header() {
           </Link>
 
           {/* Nav menu */}
-          <nav>
-            <Link
-              className="rounded-xl px-3 py-1.5 text-sm font-medium hover:bg-neutral-100 dark:hover:bg-neutral-900"
-              href="/"
-            >
-              Trang chủ
-            </Link>
-            <Link
-              className="rounded-xl px-3 py-1.5 text-sm font-medium hover:bg-neutral-100 dark:hover:bg-neutral-900"
-              href="/shops"
-            >
-              Cửa hàng
-            </Link>
-            <Link
-              className="rounded-xl px-3 py-1.5 text-sm font-medium hover:bg-neutral-100 dark:hover:bg-neutral-900"
-              href="/about"
-            >
-              Về Kaizan
-            </Link> 
-          </nav>
+          <NavDesktop />
+          <NavMobile />
           
           {sessionStatus === "authenticated" ? (
             <ProfileAvatar sessionData={sessionData}></ProfileAvatar>
           ) : (
             <nav className="hidden md:flex items-center gap-2">
-              <Link
-                className="rounded-xl px-3 py-1.5 text-sm font-medium hover:bg-neutral-100 dark:hover:bg-neutral-900"
-                href="/login"
-              >
-                Đăng nhập
-              </Link>
-              <Link
-                className="rounded-xl border border-neutral-300 dark:border-neutral-700 px-3 py-1.5 text-sm font-semibold hover:bg-neutral-100 dark:hover:bg-neutral-900"
-                href="/signup"
-              >
-                Đăng ký
-              </Link>
+              {authLinks.map((link, index) => (
+                <Link
+                  key={link.href}
+                  className={`rounded-xl px-3 py-1.5 text-sm font-medium hover:bg-neutral-100 dark:hover:bg-neutral-900 ${
+                    index === 1 ? "border border-neutral-300 dark:border-neutral-700 font-semibold" : ""
+                  }`}
+                  href={link.href}
+                >
+                  {link.label}
+                </Link>
+              ))}
             </nav>
           )}
         </div>

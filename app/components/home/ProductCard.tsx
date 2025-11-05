@@ -23,7 +23,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
     : "/placeholder.png";
 
   return (
-    <Link href={`/products/${product.idProduct}`} className="group">
+    <Link href={`/shops/${product.idProduct}`} className="group">
       <div className="p-3 bg-[#1e2939] rounded-xl flex flex-col gap-3 border border-[#2a3548] shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
         {/* Image */}
         <div className="overflow-hidden rounded-lg">

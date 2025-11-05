@@ -103,11 +103,11 @@ export const CommentsSection = ({ product, onRefresh }: CommentsSectionProps) =>
         </div>
 
         {/* Form bình luận */}
-        {session ? (
+        {session.data ? (
           <form className="space-y-3">
-            <div className="flex flex-col mb:flex-row sm:items-start gap-2 w-full">
+            <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-2 w-full">
               {/* Rating stars */}
-              <div className="flex gap-2 text-yellow-400 text-4xl cursor-pointer w-full sm:w-auto justify-center sm:justify-between">
+              <div className="flex gap-2 text-yellow-400 text-3xl sm:text-4xl cursor-pointer w-full sm:w-auto justify-center sm:justify-start">
                 {[1, 2, 3, 4, 5].map((num) => (
                   <span
                     key={num}
@@ -126,14 +126,15 @@ export const CommentsSection = ({ product, onRefresh }: CommentsSectionProps) =>
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="Viết bình luận của bạn..."
-                className="w-full p-2 border rounded-md dark:bg-gray-900 dark:text-white "
+                className="w-full p-2 border rounded-md dark:bg-gray-900 dark:text-white text-sm sm:text-base"
+                rows={3}
                 required
               />
             </div>
 
             <button
               type="submit"
-              className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+              className="px-4 py-2 text-sm sm:text-base bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
               onClick={(e) => handleAddComment(e)}
             >
               {loadingPushComment ? (

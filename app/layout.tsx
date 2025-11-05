@@ -8,7 +8,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const session = await getServerSession(authOptions); // OK ở server
 
   return (
-    <html lang="vi" suppressHydrationWarning>
+    <html lang="vi" suppressHydrationWarning className="dark">
       <body>
         <Providers session={session}>{children}</Providers>
       </body>

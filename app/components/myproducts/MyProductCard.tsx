@@ -35,26 +35,26 @@ export const MyProductCard = ({ product, imageUrl }: MyProductCardProps) => {
       </div>
 
       {/* Nội dung */}
-      <div className="p-4 flex flex-col justify-between flex-grow">
+      <div className="p-3 sm:p-4 flex flex-col justify-between flex-grow">
         <div>
-          <h2 className="text-lg font-semibold truncate text-gray-800 dark:text-gray-100">
+          <h2 className="text-base sm:text-lg font-semibold truncate text-gray-800 dark:text-gray-100">
             {product.nameProduct}
           </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 mt-1">
+          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 line-clamp-2 mt-1">
             {product.description}
           </p>
-          <h3 className="text-blue-600 dark:text-blue-400 font-bold mt-3">
+          <h3 className="text-sm sm:text-base text-blue-600 dark:text-blue-400 font-bold mt-2 sm:mt-3">
             {product.price ? product.price.toLocaleString("vi-VN") : null}₫
           </h3>
         </div>
 
-        <div className="flex justify-between items-center mt-4 text-sm text-gray-700 dark:text-gray-300">
+        <div className="flex justify-between items-center mt-3 sm:mt-4 text-xs sm:text-sm text-gray-700 dark:text-gray-300">
           <div>
             <p>Lượt mua: {product.count || 0}</p>
             <p>Đánh giá: {product.rate || 0}</p>
           </div>
           <Link href={`/shops/${product.idProduct}`}>
-            <button className="cursor-pointer border border-gray-300 dark:border-gray-600 px-4 py-2 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/40 transition-all">
+            <button className="cursor-pointer border border-gray-300 dark:border-gray-600 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/40 transition-all text-xs sm:text-sm">
               Xem thêm
             </button>
           </Link>

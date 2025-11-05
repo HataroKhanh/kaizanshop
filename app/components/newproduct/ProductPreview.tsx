@@ -24,8 +24,8 @@ export const ProductPreview = ({
   onSetMainImage,
 }: ProductPreviewProps) => {
   return (
-    <div className="flex-1 flex flex-col gap-6">
-      <div className="flex flex-col items-center gap-6">
+    <div className="flex-1 flex flex-col gap-4 sm:gap-6">
+      <div className="flex flex-col items-center gap-4 sm:gap-6">
         {/* Ảnh chính */}
         <div className="relative w-full max-w-sm aspect-square overflow-hidden rounded-xl border border-white/20">
           <Image
@@ -38,9 +38,9 @@ export const ProductPreview = ({
         </div>
 
         {/* Gallery nhỏ */}
-        <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-3 w-full max-w-sm">
           {listImage.length === 0 ? (
-            <div className="relative w-20 aspect-square overflow-hidden rounded border border-gray-600">
+            <div className="relative w-full aspect-square overflow-hidden rounded border border-gray-600">
               <Image
                 src="/fallback.png"
                 alt="thumb-fallback"
@@ -56,7 +56,7 @@ export const ProductPreview = ({
               return (
                 <div
                   key={i}
-                  className={`relative w-20 aspect-square overflow-hidden rounded border cursor-pointer ${
+                  className={`relative w-full aspect-square overflow-hidden rounded border cursor-pointer ${
                     url === mainImage
                       ? "ring-2 ring-blue-500"
                       : "border-gray-400"
@@ -85,17 +85,17 @@ export const ProductPreview = ({
       </div>
 
       {/* Thông tin preview */}
-      <div className="mt-4 text-gray-100 flex-col flex gap-2">
-        <h2 className="text-2xl font-semibold mb-2">
+      <div className="mt-2 sm:mt-4 text-gray-100 flex-col flex gap-2">
+        <h2 className="text-xl sm:text-2xl font-semibold mb-2">
           {nameProduct === ""
             ? "Tên sản phẩm"
             : formatStringTitle(nameProduct)}
         </h2>
-        <p className="text-gray-400 mb-2">
+        <p className="text-sm sm:text-base text-gray-400 mb-2">
           {description || "Mô tả ngắn: ..."}
         </p>
-        <p className="text-sm text-gray-400">Số lượt bán: 0</p>
-        <p className="text-2xl">Giá: {formatPrice(price)}</p>
+        <p className="text-xs sm:text-sm text-gray-400">Số lượt bán: 0</p>
+        <p className="text-lg sm:text-2xl">Giá: {formatPrice(price)}</p>
       </div>
     </div>
   );

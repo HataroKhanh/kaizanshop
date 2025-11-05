@@ -1,16 +1,17 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 export default function BuyNow({ idProduct }: { idProduct: string }) {
-  const handleDownload = async () => {
-    window.open(`/api/products/download_product?id=${idProduct}`, "_blank");
+  const router = useRouter();
+  const handleDownload = () => {
+    router.push(`/checkout/${idProduct}`);
   };
 
   return (
     <div
       onClick={handleDownload}
-      className="cursor-pointer w-full flex justify-center content-center bg-[#3e3df1] p-3 rounded-[5px] hover:bg-blue-600"
+      className="cursor-pointer w-full flex justify-center content-center bg-[#3e3df1] p-2 sm:p-3 rounded-[5px] hover:bg-blue-600"
     >
-      <button>Mua Ngay</button>
+      <button className="text-sm sm:text-base">Mua Ngay</button>
     </div>
   );
 }

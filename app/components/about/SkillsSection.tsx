@@ -33,7 +33,7 @@ export default function SkillsSection() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <SkillCard title="Ngôn ngữ lập trình" skills={programmingLanguages} />
         <SkillCard title="Cơ sở dữ liệu & Công cụ" skills={databasesTools} />
         <SkillCard title="Kỹ năng khác" skills={otherSkills} fullWidth />

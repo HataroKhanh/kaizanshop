@@ -1,9 +1,27 @@
-@import "tailwindcss";
-@import "tailwindcss-animated";
+@import 'tailwindcss';
+@import 'tailwindcss-animated';
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
+}
+.swiper-slide {
+  width: 100% !important;
+  max-width: 100% !important;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Mobile adjustments for Swiper */
+@media (max-width: 640px) {
+  .swiper-button-next,
+  .swiper-button-prev {
+    display: none !important;
+  }
+  .swiper-pagination-bullets {
+    bottom: 8px !important;
+  }
 }
 
 @theme inline {
@@ -27,8 +45,8 @@ body {
 }
 
 @layer base {
-  input[type="number"]::-webkit-inner-spin-button,
-  input[type="number"]::-webkit-outer-spin-button {
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }

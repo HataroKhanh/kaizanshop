@@ -56,8 +56,8 @@ export default function ProductPage() {
     <>
       <Header />
       <main className="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 gap-20 ">
-          <ProductImageGallery images={data.images || []}  />
+        <section className="grid grid-cols-1 md:grid-cols-2 mb-8 gap-6 md:gap-10 lg:gap-20">
+          <ProductImageGallery images={data.images || []} />
           <ProductDetails
             product={data}
             isOwner={isOwner}

@@ -27,7 +27,7 @@ export default function MyProductsPage() {
   return (
     <>
       <Header />
-      <section className="flex flex-col mx-auto mt-10 p-8 pt-0 max-w-7xl transition-colors duration-300 bg-gray-50 dark:bg-gray-900 min-h-screen">
+      <section className="flex flex-col mx-auto mt-6 sm:mt-10 p-4 sm:p-8 pt-0 max-w-7xl transition-colors duration-300 bg-gray-50 dark:bg-gray-900 min-h-screen">
         <MyProductsHeader />
         <MyProductsGrid isLoading={isLoading} data={data} />
       </section>

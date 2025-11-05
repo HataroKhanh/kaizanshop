@@ -19,7 +19,6 @@ export async function GET(req: Request) {
     {
       projection: {
         _id: 0,
-        idProduct: 0,
         "owner.email": 0,
       },
     }

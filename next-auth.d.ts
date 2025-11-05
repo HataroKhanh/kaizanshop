@@ -1,4 +1,3 @@
-// file: types/next-auth.d.ts (hoặc tên tương tự)
 import NextAuth, { DefaultSession } from "next-auth";
 import { JWT } from "next-auth/jwt";
 

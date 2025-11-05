@@ -10,6 +10,10 @@ export async function middleware(req: Request & { headers: Headers }) {
     secret: process.env.NEXTAUTH_SECRET,
   });
 
+  if (token && url.pathname === "/login") {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
   if (!token) {
     url.pathname = "/login";
     return NextResponse.redirect(url);
@@ -19,5 +23,5 @@ export async function middleware(req: Request & { headers: Headers }) {
 }
 
 export const config = {
-  matcher: ["/myproducts/:path*", "/profile"],
+  matcher: ["/myproducts/:path*", "/profile", "/login"],
 };
